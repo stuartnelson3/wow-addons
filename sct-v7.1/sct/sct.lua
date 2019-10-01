@@ -1063,9 +1063,9 @@ end
 --Setup Healing Flags based on Options
 function SCT:SetHealingFlags()
   --set WoW Healing Flags
-  if (SCT.db.profile["WOWHEAL"]) then
-    SetCVar("floatingCombatTextCombatHealing", 0)
-  else
-    SetCVar("floatingCombatTextCombatHealing", 1)
-  end
+  -- if (SCT.db.profile["WOWHEAL"]) then
+  --   SetCVar("floatingCombatTextCombatHealing", 0)
+  -- else
+  --   SetCVar("floatingCombatTextCombatHealing", 1)
+  -- end
 end
