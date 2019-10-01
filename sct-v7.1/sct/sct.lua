@@ -144,34 +144,20 @@ local COMBAT_EVENTS = {
 }
 
 local SCHOOL_STRINGS = {
-  [SCHOOL_MASK_PHYSICAL] = SPELL_SCHOOL0_CAP,
-  [SCHOOL_MASK_HOLY] = SPELL_SCHOOL1_CAP,
-  [SCHOOL_MASK_FIRE] = SPELL_SCHOOL2_CAP,
-  [SCHOOL_MASK_NATURE] = SPELL_SCHOOL3_CAP,
-  [SCHOOL_MASK_FROST] = SPELL_SCHOOL4_CAP,
-  [SCHOOL_MASK_SHADOW] = SPELL_SCHOOL5_CAP,
-  [SCHOOL_MASK_ARCANE] = SPELL_SCHOOL6_CAP,
-}
-
-local POWER_STRINGS = {
-  [SPELL_POWER_MANA] = MANA,
-  [SPELL_POWER_RAGE] = RAGE,
-  [SPELL_POWER_FOCUS] = FOCUS,
-  [SPELL_POWER_ENERGY] = ENERGY,
-  [SPELL_POWER_RUNES] = RUNES,
-  [SPELL_POWER_RUNIC_POWER] = RUNIC_POWER,
-  [SPELL_POWER_SOUL_SHARDS] = SHARDS,
-  [SPELL_POWER_LUNAR_POWER] = LUNAR_POWER,
-  [SPELL_POWER_HOLY_POWER] = HOLY_POWER,
-  [SPELL_POWER_ALTERNATE_POWER] = ALTERNATE_RESOURCE_TEXT,
-  [SPELL_POWER_MAELSTROM] = MAELSTROM_POWER,
-  [SPELL_POWER_CHI] = CHI_POWER,
-  [SPELL_POWER_INSANITY] = INSANITY_POWER,
-  --[SPELL_POWER_OBSOLETE] = 14;
-  --[SPELL_POWER_OBSOLETE2] = 15;
-  [SPELL_POWER_ARCANE_CHARGES] = ARCANE_CHARGES_POWER,
-  [SPELL_POWER_FURY] = FURY,
-  [SPELL_POWER_PAIN] = PAIN,
+  -- physical
+  [1] = SPELL_SCHOOL0_CAP,
+  -- holy
+  [2] = SPELL_SCHOOL1_CAP,
+  -- fire
+  [4] = SPELL_SCHOOL2_CAP,
+  -- nature
+  [8] = SPELL_SCHOOL3_CAP,
+  -- frost
+  [16] = SPELL_SCHOOL4_CAP,
+  -- shadow
+  [32] = SPELL_SCHOOL5_CAP,
+  -- arcane
+  [64] = SPELL_SCHOOL6_CAP,
 }
 
 local SHADOW_STRINGS = {
@@ -409,7 +395,7 @@ function mana_update()
   if db["SHOWALLPOWER"] then
     local ManaFull = UnitPower("player")
     if (ManaFull > last_mana_full) then
-      self:Display_Event("SHOWPOWER", string_format("+%d %s", ManaFull-last_mana_full, string_nil(POWER_STRINGS[UnitPowerType("player")])))
+      self:Display_Event("SHOWPOWER", string_format("+%d %s", ManaFull-last_mana_full, UnitPowerType("player")))
     end
     last_mana_full = ManaFull
   end
@@ -521,10 +507,7 @@ function SCT:ParseCombat(larg1, timestamp, event, hideCaster, sourceGUID, source
       if event == "SWING_DAMAGE" or event == "RANGE_DAMAGE" then
         self:Display_Event("SHOWHIT", "-"..text, critical)
       else
-        -- print here
-        print(SCHOOL_MASK_PHYSICAL)
-        print(school)
-        -- self:Display_Event("SHOWSPELL", "-"..text, critical, SCHOOL_STRINGS[school], resisted, nil, nil, nil, spellName, texture)
+        self:Display_Event("SHOWSPELL", "-"..text, critical, SCHOOL_STRINGS[school], resisted, nil, nil, nil, spellName, texture)
       end
     end
   ------------buff/debuff gain----------------
@@ -685,8 +668,7 @@ function SCT:ParseReflect(timestamp, event, sourceGUID, sourceName, sourceFlags,
     local parent
     if (db["NAMEPLATES"]) then parent = self:GetNameplate(destGUID) end
     if SCTD then
-      print("SCTD", school)
-      -- SCTD:DisplayText("SCTD_SHOWSPELL", string_format("%s: %d", REFLECT, self:ShortenValue(amount)), critical, SCHOOL_STRINGS[school], resisted, destName, spellName, texture, destFlags)
+      SCTD:DisplayText("SCTD_SHOWSPELL", string_format("%s: %d", REFLECT, self:ShortenValue(amount)), critical, SCHOOL_STRINGS[school], resisted, destName, spellName, texture, destFlags)
     else
       self:Display_Event("SHOWABSORB", string_format("%s: %d (%s)", spellName, self:ShortenValue(amount), REFLECT), critical,nil,nil,nil,nil,parent,nil,texture)
     end
