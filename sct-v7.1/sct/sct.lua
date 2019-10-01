@@ -3,10 +3,11 @@
   Scrolling Combat Text
 
   Author: Grayhoof
+  Classic Fixes: stuartnelson3
   ****************************************************************
 
   Official Site:
-    http://grayhoof.wowinterface.com
+    https://github.com/stuartnelson3/wow-addons
 
   ****************************************************************]]
 SCT = LibStub("AceAddon-3.0"):NewAddon("SCT", "AceEvent-3.0", "AceTimer-3.0", "AceConsole-3.0", "AceHook-3.0")

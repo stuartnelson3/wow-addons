@@ -3,9 +3,9 @@
 ## Title: ScrollingCombatText
 ## Notes: Adds Scrolling Combat Text above your character
 ## Version: 7.1
-## Author: Grayhoof
+## Author: stuartnelson3
 ## SavedVariables: SCT_CONFIG, SCT_EVENT_CONFIG
-## X-Website: http://grayhoof.wowinterface.com/
+## X-Website: https://github.com/stuartnelson3/wow-addons
 ## X-Category: Combat
 ## X-RelSite-WoWI: 3965
 ## X-Embeds: Ace3, LibSharedMedia-3.0
