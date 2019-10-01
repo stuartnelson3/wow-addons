@@ -383,7 +383,7 @@ end
 -- https://wow.gamepedia.com/UNIT_POWER_UPDATE
 function SCT:UNIT_POWER_UPDATE(unitType, powerType)
   -- bail early if it's not our character
-  if unitType != "player" then
+  if unitType ~= "player" then
     return
   end
   if powerType == "MANA" then
