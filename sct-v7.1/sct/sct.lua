@@ -341,7 +341,7 @@ end
 
 ----------------------
 --Player Health
-function SCT:UNIT_HEALTH(event, larg1)
+function SCT:UNIT_HEALTH(larg1)
   if (larg1 == "player") then
     local warnlevel = db["LOWHP"] / 100
     local HPPercent = UnitHealth("player") / UnitHealthMax("player")
@@ -381,9 +381,9 @@ end
 -- - combo points
 -- these were merged into a single event, along with rage et al.
 -- https://wow.gamepedia.com/UNIT_POWER_UPDATE
-function SCT:UNIT_POWER_UPDATE(unitType, powerType)
+function SCT:UNIT_POWER_UPDATE(unitTarget, powerType)
   -- bail early if it's not our character
-  if unitType ~= "player" then
+  if unitTarget ~= "player" then
     return
   end
   if powerType == "MANA" then
@@ -430,7 +430,7 @@ end
 
 ----------------------
 --Player target change
-function SCT:PLAYER_TARGET_CHANGED(event)
+function SCT:PLAYER_TARGET_CHANGED()
   if (not UnitIsFriend("target", "player") and (UnitIsDead("target")~=true) and (UnitIsCorpse("target")~=true)) then
     last_hp_target_percent = UnitHealth("target")
   else
@@ -440,26 +440,26 @@ end
 
 ----------------------
 --Power Change
-function SCT:UNIT_DISPLAYPOWER(event)
+function SCT:UNIT_DISPLAYPOWER(unitTarget)
   last_mana_full = UnitPower("player")
 end
 
 ----------------------
 --Player Combat
-function SCT:PLAYER_REGEN_DISABLED(event)
+function SCT:PLAYER_REGEN_DISABLED()
   self:Display_Event("SHOWCOMBAT", SCT.LOCALS.Combat)
 end
 
 ----------------------
 --Player NoCombat
-function SCT:PLAYER_REGEN_ENABLED(event)
+function SCT:PLAYER_REGEN_ENABLED()
   self:Display_Event("SHOWCOMBAT", SCT.LOCALS.NoCombat)
 end
 
 ----------------------
 -- Skill Gains
-function SCT:CHAT_MSG_SKILL(event, larg1)
-  local skill, rank = string_match(larg1, skillmsg)
+function SCT:CHAT_MSG_SKILL(text, playerName, languageName, channelName, playerName2, specialFlags, zoneChannelID, channelIndex, channelBaseName, unused, lineID, guid, bnSenderID, isMobile, isSubtitle, hideSenderInLetterbox, supressRaidIcons)
+  local skill, rank = string_match(text, skillmsg)
   if skill then
     self:Display_Event("SHOWSKILL", string_format("%s: %d", skill, rank))
   end
@@ -648,26 +648,27 @@ end
 
 ----------------------
 --Handle Blizzard events
-function SCT:COMBAT_TEXT_UPDATE(event, larg1, larg2, larg3)
+-- This event seems .. very different now
+function SCT:COMBAT_TEXT_UPDATE(combatTextType)
   --Normal Events
-  if (larg1=="SPELL_ACTIVE") then
+  if (combatTextType=="SPELL_ACTIVE") then
     --check for redundant display info
-    if not self:CheckSkill(larg2.."!")  then
-      local texture = select(3, GetSpellInfo(larg2))
+    --if not self:CheckSkill(larg2.."!")  then
+     -- local texture = select(3, GetSpellInfo(larg2))
       self:Display_Event("SHOWEXECUTE", larg2.."!", nil, nil, nil, nil, nil, nil, nil, texture)
-    end
-  elseif (larg1=="FACTION") then
+    --end
+  elseif (combatTextType=="FACTION") then
     local sign = "+"
-    if (tonumber(larg3) < 0) then sign = "" end
+    -- if (tonumber(larg3) < 0) then sign = "" end
     self:Display_Event("SHOWREP", string_format("%s%d %s (%s)", sign, larg3, REPUTATION, larg2))
-  elseif (larg1=="HONOR_GAINED") then
+  elseif (combatTextType=="HONOR_GAINED") then
     self:Display_Event("SHOWHONOR", string_format("+%d %s", larg2, HONOR))
-  elseif (larg1=="EXTRA_ATTACKS") then
-    if ( tonumber(larg2) > 1 ) then
+  elseif (combatTextType=="EXTRA_ATTACKS") then
+    -- if ( tonumber(larg2) > 1 ) then
       self:Display_Event("SHOWEXECUTE", string_format("%s (%d)", self.LOCALS.ExtraAttack, larg2))
-    else
-      self:Display_Event("SHOWEXECUTE", self.LOCALS.ExtraAttack)
-    end
+    -- else
+    --   self:Display_Event("SHOWEXECUTE", self.LOCALS.ExtraAttack)
+    -- end
   end
 end
 
