@@ -1,4 +1,4 @@
-## Interface: 70100
+## Interface: 11302
 ## /run print((select(4, GetBuildInfo())));
 ## Title: ScrollingCombatText
 ## Notes: Adds Scrolling Combat Text above your character
