@@ -395,18 +395,17 @@ end
 
 -------------------
 -- Unit Mana Update
-function mana_update
-  if UnitPowerType("player") == 0 then
-    local warnlevel = db["LOWMANA"] / 100
-    local ManaPercent = UnitPower("player") / UnitPowerMax("player")
-    if (ManaPercent < warnlevel) and (last_mana_percent >= warnlevel) and (not UnitIsFeignDeath("player")) then
-      if (db["PLAYSOUND"] and db["SHOWLOWMANA"]) then
-        PlaySoundFile("Sound\\Spells\\ShaysBell.wav")
-      end
-      SCT:Display_Event("SHOWLOWMANA", string_format("%s (%d)", SCT.LOCALS.LowMana, UnitPower("player")))
+function mana_update()
+  local warnlevel = db["LOWMANA"] / 100
+  local ManaPercent = UnitPower("player") / UnitPowerMax("player")
+  if (ManaPercent < warnlevel) and (last_mana_percent >= warnlevel) and (not UnitIsFeignDeath("player")) then
+    if (db["PLAYSOUND"] and db["SHOWLOWMANA"]) then
+      PlaySoundFile("Sound\\Spells\\ShaysBell.wav")
     end
-    last_mana_percent = ManaPercent
+    SCT:Display_Event("SHOWLOWMANA", string_format("%s (%d)", SCT.LOCALS.LowMana, UnitPower("player")))
   end
+  last_mana_percent = ManaPercent
+
   if db["SHOWALLPOWER"] then
     local ManaFull = UnitPower("player")
     if (ManaFull > last_mana_full) then
@@ -418,7 +417,7 @@ end
 
 ----------------------
 -- Unit Combo Points Update
-function combo_points_update
+function combo_points_update()
   local sct_CP = GetComboPoints('player')
   if (sct_CP ~= 0) then
     local sct_CP_Message = string_format("%d %s", sct_CP, SCT.LOCALS.ComboPoint)
