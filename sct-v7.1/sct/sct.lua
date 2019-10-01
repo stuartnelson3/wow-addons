@@ -376,6 +376,8 @@ function SCT:UNIT_POWER_UPDATE(unitTarget, powerType)
     mana_update()
   elseif powerType == "COMBO_POINTS" then
     combo_points_update()
+  elseif powerType == "RUNIC_POWER" then
+    --TODO
   end
 end
 
@@ -1022,7 +1024,6 @@ function SCT:RegisterSelfEvents()
   self:RegisterEvent("UNIT_HEALTH")
   self:RegisterEvent("UNIT_POWER_UPDATE")
   self:RegisterEvent("UNIT_DISPLAYPOWER")
-  self:RegisterEvent("RUNE_POWER_UPDATE");
   self:RegisterEvent("PLAYER_REGEN_ENABLED")
   self:RegisterEvent("PLAYER_REGEN_DISABLED")
   self:RegisterEvent("COMBAT_TEXT_UPDATE")
