@@ -521,7 +521,10 @@ function SCT:ParseCombat(larg1, timestamp, event, hideCaster, sourceGUID, source
       if event == "SWING_DAMAGE" or event == "RANGE_DAMAGE" then
         self:Display_Event("SHOWHIT", "-"..text, critical)
       else
-        self:Display_Event("SHOWSPELL", "-"..text, critical, SCHOOL_STRINGS[school], resisted, nil, nil, nil, spellName, texture)
+        -- print here
+        print(SCHOOL_MASK_PHYSICAL)
+        print(school)
+        -- self:Display_Event("SHOWSPELL", "-"..text, critical, SCHOOL_STRINGS[school], resisted, nil, nil, nil, spellName, texture)
       end
     end
   ------------buff/debuff gain----------------
@@ -682,7 +685,8 @@ function SCT:ParseReflect(timestamp, event, sourceGUID, sourceName, sourceFlags,
     local parent
     if (db["NAMEPLATES"]) then parent = self:GetNameplate(destGUID) end
     if SCTD then
-      SCTD:DisplayText("SCTD_SHOWSPELL", string_format("%s: %d", REFLECT, self:ShortenValue(amount)), critical, SCHOOL_STRINGS[school], resisted, destName, spellName, texture, destFlags)
+      print("SCTD", school)
+      -- SCTD:DisplayText("SCTD_SHOWSPELL", string_format("%s: %d", REFLECT, self:ShortenValue(amount)), critical, SCHOOL_STRINGS[school], resisted, destName, spellName, texture, destFlags)
     else
       self:Display_Event("SHOWABSORB", string_format("%s: %d (%s)", spellName, self:ShortenValue(amount), REFLECT), critical,nil,nil,nil,nil,parent,nil,texture)
     end
