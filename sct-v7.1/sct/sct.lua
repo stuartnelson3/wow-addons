@@ -40,8 +40,8 @@ local menuloaded = false
 local GetComboPoints = GetComboPoints
 local UnitHealth = UnitHealth
 local UnitHealthMax = UnitHealthMax
-local UnitMana = UnitMana
-local UnitManaMax = UnitManaMax
+local UnitPower = UnitPower
+local UnitPowerMax = UnitPowerMax
 local UnitName = UnitName
 local UnitIsFriend = UnitIsFriend
 local UnitIsDead = UnitIsDead
@@ -50,8 +50,6 @@ local UnitIsFeignDeath = UnitIsFeignDeath
 local UnitGUID = UnitGUID
 local PlaySound = PlaySound
 local PlaySoundFile = PlaySoundFile
-local GetNumRaidMembers = GetNumGroupMembers
-local GetNumPartyMembers = GetNumPartyMembers
 local GetSpellInfo = GetSpellInfo
 
 --LUA calls
@@ -379,17 +377,17 @@ end
 function SCT:UNIT_POWER(event, larg1)
   if (larg1 == "player") and (UnitPowerType("player") == 0)then
     local warnlevel = db["LOWMANA"] / 100
-    local ManaPercent = UnitMana("player") / UnitManaMax("player")
+    local ManaPercent = UnitPower("player") / UnitPowerMax("player")
     if (ManaPercent < warnlevel) and (last_mana_percent >= warnlevel) and (not UnitIsFeignDeath("player")) then
       if (db["PLAYSOUND"] and db["SHOWLOWMANA"]) then
         PlaySoundFile("Sound\\Spells\\ShaysBell.wav")
       end
-      SCT:Display_Event("SHOWLOWMANA", string_format("%s (%d)", SCT.LOCALS.LowMana, UnitMana("player")))
+      SCT:Display_Event("SHOWLOWMANA", string_format("%s (%d)", SCT.LOCALS.LowMana, UnitPower("player")))
     end
     last_mana_percent = ManaPercent
   end
   if (larg1 == "player") and (db["SHOWALLPOWER"]) then
-    local ManaFull = UnitMana("player")
+    local ManaFull = UnitPower("player")
     if (ManaFull > last_mana_full) then
       self:Display_Event("SHOWPOWER", string_format("+%d %s", ManaFull-last_mana_full, string_nil(POWER_STRINGS[UnitPowerType("player")])))
     end
@@ -410,7 +408,7 @@ end
 ----------------------
 --Power Change
 function SCT:UNIT_DISPLAYPOWER(event)
-  last_mana_full = UnitMana("player")
+  last_mana_full = UnitPower("player")
 end
 
 ----------------------
