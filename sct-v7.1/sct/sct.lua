@@ -373,9 +373,29 @@ function SCT:RUNE_POWER_UPDATE(event, rune)
 end
 
 ----------------------
---Player Mana
-function SCT:UNIT_POWER(event, larg1)
-  if (larg1 == "player") and (UnitPowerType("player") == 0)then
+-- Player Power
+-- Maybe expand this for other power types?
+-- This was originally two separate functions:
+-- - mana
+-- - combo points
+-- these were merged into a single event, along with rage et al.
+-- https://wow.gamepedia.com/UNIT_POWER_UPDATE
+function SCT:UNIT_POWER_UPDATE(unitType, powerType)
+  -- bail early if it's not our character
+  if unitType != "player" then
+    return
+  end
+  if powerType == "MANA" then
+    mana_update()
+  elseif powerType == "COMBO_POINTS" then
+    combo_points_update()
+  end
+end
+
+-------------------
+-- Unit Mana Update
+function mana_update
+  if UnitPowerType("player") == 0 then
     local warnlevel = db["LOWMANA"] / 100
     local ManaPercent = UnitPower("player") / UnitPowerMax("player")
     if (ManaPercent < warnlevel) and (last_mana_percent >= warnlevel) and (not UnitIsFeignDeath("player")) then
@@ -386,12 +406,25 @@ function SCT:UNIT_POWER(event, larg1)
     end
     last_mana_percent = ManaPercent
   end
-  if (larg1 == "player") and (db["SHOWALLPOWER"]) then
+  if db["SHOWALLPOWER"] then
     local ManaFull = UnitPower("player")
     if (ManaFull > last_mana_full) then
       self:Display_Event("SHOWPOWER", string_format("+%d %s", ManaFull-last_mana_full, string_nil(POWER_STRINGS[UnitPowerType("player")])))
     end
     last_mana_full = ManaFull
+  end
+end
+
+----------------------
+-- Unit Combo Points Update
+function combo_points_update
+  local sct_CP = GetComboPoints('player')
+  if (sct_CP ~= 0) then
+    local sct_CP_Message = string_format("%d %s", sct_CP, SCT.LOCALS.ComboPoint)
+    if (sct_CP == 5) then
+      sct_CP_Message = sct_CP_Message.." "..SCT.LOCALS.FiveCPMessage
+    end
+    self:Display_Event("SHOWCOMBOPOINTS", sct_CP_Message)
   end
 end
 
@@ -421,21 +454,6 @@ end
 --Player NoCombat
 function SCT:PLAYER_REGEN_ENABLED(event)
   self:Display_Event("SHOWCOMBAT", SCT.LOCALS.NoCombat)
-end
-
-----------------------
---Unit Combo Points
-function SCT:UNIT_COMBO_POINTS(event, larg1)
-  if (larg1 == "player") then
-    local sct_CP = GetComboPoints('player')
-    if (sct_CP ~= 0) then
-      local sct_CP_Message = string_format("%d %s", sct_CP, SCT.LOCALS.ComboPoint)
-      if (sct_CP == 5) then
-        sct_CP_Message = sct_CP_Message.." "..SCT.LOCALS.FiveCPMessage
-      end
-      self:Display_Event("SHOWCOMBOPOINTS", sct_CP_Message)
-    end
-  end
 end
 
 ----------------------
@@ -1015,12 +1033,11 @@ function SCT:RegisterSelfEvents()
 
   -- Register Main Events
   self:RegisterEvent("UNIT_HEALTH")
-  self:RegisterEvent("UNIT_POWER")
+  self:RegisterEvent("UNIT_POWER_UPDATE")
   self:RegisterEvent("UNIT_DISPLAYPOWER")
   self:RegisterEvent("RUNE_POWER_UPDATE");
   self:RegisterEvent("PLAYER_REGEN_ENABLED")
   self:RegisterEvent("PLAYER_REGEN_DISABLED")
-  self:RegisterEvent("UNIT_COMBO_POINTS")
   self:RegisterEvent("COMBAT_TEXT_UPDATE")
   self:RegisterEvent("CHAT_MSG_SKILL")
   self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED","ParseCombat")
